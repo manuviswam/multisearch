@@ -1,10 +1,25 @@
 package handler
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
+
+	m "github.com/manuviswam/multisearch/model"
+	s "github.com/manuviswam/multisearch/service"
 )
 
-func Search(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello world")
+func HandleSearch(google *s.GoogleSearch) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		query := r.URL.Query().Get("q")
+		googleResult, _ := google.Search(query)
+
+		response := m.SearchResponse{
+			Query: query,
+			Results: m.SearchResults{
+				Google: googleResult,
+			},
+		}
+		jsonResponse, _ := json.Marshal(response)
+		w.Write(jsonResponse)
+	}
 }

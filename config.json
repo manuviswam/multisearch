@@ -1,3 +1,4 @@
 {
-	"Port":8000
+	"Port":8000,
+	"GoogleAPIKey":"[REDACTED]"
 }

@@ -6,7 +6,8 @@ import (
 )
 
 type Configuration struct {
-	Port int
+	Port         int
+	GoogleAPIKey string
 }
 
 func ReadFromFile(path string) (Configuration, error) {
