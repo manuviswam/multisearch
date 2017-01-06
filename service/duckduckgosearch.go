@@ -15,12 +15,14 @@ const (
 type DuckDuckGoSearch struct {
 }
 
-func (d *DuckDuckGoSearch) Search(query string) m.SearchResult {
+func (d *DuckDuckGoSearch) Search(query string, c chan m.SearchResult) {
+	defer close(c)
 	resp, err := http.Get(fmt.Sprintf(duckDuckGoUrl, query))
 	if err != nil {
-		return m.SearchResult{
+		c <- m.SearchResult{
 			Error: err.Error(),
 		}
+		return
 	}
 	defer resp.Body.Close()
 
@@ -28,19 +30,20 @@ func (d *DuckDuckGoSearch) Search(query string) m.SearchResult {
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&duckDuckGoResponse)
 	if err != nil {
-		return m.SearchResult{
+		c <- m.SearchResult{
 			Error: err.Error(),
 		}
+		return
 	}
 
 	if len(duckDuckGoResponse.RelatedTopics) < 1 {
-		return m.SearchResult{
+		c <- m.SearchResult{
 			Error: "No response obtained",
 		}
+		return
 	}
-	return m.SearchResult{
+	c <- m.SearchResult{
 		Url:  duckDuckGoResponse.RelatedTopics[0].FirstURL,
 		Text: duckDuckGoResponse.RelatedTopics[0].Text,
 	}
-
 }

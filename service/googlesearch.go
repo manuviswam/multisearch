@@ -16,12 +16,14 @@ type GoogleSearch struct {
 	APIKey string
 }
 
-func (g *GoogleSearch) Search(query string) m.SearchResult {
+func (g *GoogleSearch) Search(query string, c chan m.SearchResult) {
+	defer close(c)
 	resp, err := http.Get(fmt.Sprintf(googleUrl, g.APIKey, query))
 	if err != nil {
-		return m.SearchResult{
+		c <- m.SearchResult{
 			Error: err.Error(),
 		}
+		return
 	}
 	defer resp.Body.Close()
 
@@ -29,19 +31,20 @@ func (g *GoogleSearch) Search(query string) m.SearchResult {
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&googleResponse)
 	if err != nil {
-		return m.SearchResult{
+		c <- m.SearchResult{
 			Error: err.Error(),
 		}
+		return
 	}
 
 	if len(googleResponse.Items) < 1 {
-		return m.SearchResult{
+		c <- m.SearchResult{
 			Error: "No response obtained",
 		}
+		return
 	}
-	return m.SearchResult{
+	c <- m.SearchResult{
 		Url:  googleResponse.Items[0].Link,
 		Text: googleResponse.Items[0].Snippet,
 	}
-
 }

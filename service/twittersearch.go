@@ -43,37 +43,43 @@ func (t *TwitterSearch) SetBearerToken(encodedTwitterKey string) {
 	t.bearerToken = twitterToken.AccessToken
 }
 
-func (t *TwitterSearch) Search(query string) m.SearchResult {
+func (t *TwitterSearch) Search(query string, c chan m.SearchResult) {
+	defer close(c)
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", fmt.Sprintf(twitterUrl, query), nil)
 	if err != nil {
-		panic(err)
+		c <- m.SearchResult{
+			Error: err.Error(),
+		}
+		return
 	}
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", t.bearerToken))
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
 	if err != nil {
-		return m.SearchResult{
+		c <- m.SearchResult{
 			Error: err.Error(),
 		}
+		return
 	}
 
 	twitterResponse := m.TwitterResponse{}
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&twitterResponse)
 	if err != nil {
-		return m.SearchResult{
+		c <- m.SearchResult{
 			Error: err.Error(),
 		}
+		return
 	}
 
 	if len(twitterResponse.Statuses) < 1 {
-		return m.SearchResult{
+		c <- m.SearchResult{
 			Error: "No response obtained",
 		}
+		return
 	}
-	return m.SearchResult{
+	c <- m.SearchResult{
 		Text: twitterResponse.Statuses[0].Text,
 	}
-
 }
