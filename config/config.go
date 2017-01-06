@@ -6,8 +6,9 @@ import (
 )
 
 type Configuration struct {
-	Port         int
-	GoogleAPIKey string
+	Port              int
+	GoogleAPIKey      string
+	EncodedTwitterKey string
 }
 
 func ReadFromFile(path string) (Configuration, error) {

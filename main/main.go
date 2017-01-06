@@ -22,6 +22,10 @@ func main() {
 
 	duckDuckGo := &s.DuckDuckGoSearch{}
 
-	http.HandleFunc("/", h.HandleSearch(google, duckDuckGo))
+	twitter := &s.TwitterSearch{}
+
+	twitter.SetBearerToken(conf.EncodedTwitterKey)
+
+	http.HandleFunc("/", h.HandleSearch(google, duckDuckGo, twitter))
 	fmt.Println(http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), nil))
 }
