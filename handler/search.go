@@ -11,7 +11,7 @@ import (
 func HandleSearch(google *s.GoogleSearch) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query().Get("q")
-		googleResult, _ := google.Search(query)
+		googleResult := google.Search(query)
 
 		response := m.SearchResponse{
 			Query: query,

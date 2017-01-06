@@ -1,8 +1,9 @@
 package model
 
 type SearchResult struct {
-	Url  string
-	Text string
+	Error string
+	Url   string
+	Text  string
 }
 
 type SearchResults struct {
