@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	Url = "https://www.googleapis.com/customsearch/v1?key=%s&cx=017576662512468239146:omuauf_lfve&num=1&q=%s"
+	googleUrl = "https://www.googleapis.com/customsearch/v1?key=%s&cx=017576662512468239146:omuauf_lfve&num=1&q=%s"
 )
 
 type GoogleSearch struct {
@@ -17,7 +17,7 @@ type GoogleSearch struct {
 }
 
 func (g *GoogleSearch) Search(query string) m.SearchResult {
-	resp, err := http.Get(fmt.Sprintf(Url, g.APIKey, query))
+	resp, err := http.Get(fmt.Sprintf(googleUrl, g.APIKey, query))
 	if err != nil {
 		return m.SearchResult{
 			Error: err.Error(),

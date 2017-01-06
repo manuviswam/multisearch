@@ -20,6 +20,8 @@ func main() {
 		APIKey: conf.GoogleAPIKey,
 	}
 
-	http.HandleFunc("/", h.HandleSearch(google))
+	duckDuckGo := &s.DuckDuckGoSearch{}
+
+	http.HandleFunc("/", h.HandleSearch(google, duckDuckGo))
 	fmt.Println(http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), nil))
 }
