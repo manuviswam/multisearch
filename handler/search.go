@@ -45,7 +45,7 @@ func HandleSearch(google *s.GoogleSearch, duckDuckGo *s.DuckDuckGoSearch, twitte
 		w.Header().Add("Content-Type", "application/json")
 		w.Write(jsonResponse)
 
-		fmt.Println("Elapsed time ", time.Since(start))
+		fmt.Println("Total elapsed time ", time.Since(start))
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	m "github.com/manuviswam/multisearch/model"
 )
@@ -54,7 +55,9 @@ func (t *TwitterSearch) Search(query string, c chan m.SearchResult) {
 		return
 	}
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", t.bearerToken))
+	start := time.Now()
 	resp, err := client.Do(req)
+	fmt.Println("Elapsed time for twitter ", time.Since(start))
 	defer resp.Body.Close()
 	if err != nil {
 		c <- m.SearchResult{

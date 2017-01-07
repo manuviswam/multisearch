@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	m "github.com/manuviswam/multisearch/model"
 )
@@ -18,14 +19,16 @@ type GoogleSearch struct {
 
 func (g *GoogleSearch) Search(query string, c chan m.SearchResult) {
 	defer close(c)
+	start := time.Now()
 	resp, err := http.Get(fmt.Sprintf(googleUrl, g.APIKey, query))
+	fmt.Println("Elapsed time for google ", time.Since(start))
+	defer resp.Body.Close()
 	if err != nil {
 		c <- m.SearchResult{
 			Error: err.Error(),
 		}
 		return
 	}
-	defer resp.Body.Close()
 
 	googleResponse := m.GoogleResponse{}
 	decoder := json.NewDecoder(resp.Body)

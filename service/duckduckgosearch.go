@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	m "github.com/manuviswam/multisearch/model"
 )
@@ -17,14 +18,16 @@ type DuckDuckGoSearch struct {
 
 func (d *DuckDuckGoSearch) Search(query string, c chan m.SearchResult) {
 	defer close(c)
+	start := time.Now()
 	resp, err := http.Get(fmt.Sprintf(duckDuckGoUrl, query))
+	fmt.Println("Elapsed time for duckduckgo ", time.Since(start))
+	defer resp.Body.Close()
 	if err != nil {
 		c <- m.SearchResult{
 			Error: err.Error(),
 		}
 		return
 	}
-	defer resp.Body.Close()
 
 	duckDuckGoResponse := m.DuckDuckGoResponse{}
 	decoder := json.NewDecoder(resp.Body)
