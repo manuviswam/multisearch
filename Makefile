@@ -1,5 +1,4 @@
 build:
-	go build -o out/multisearch main/main.go
-	cp config.json out/config.json
+	go build
 run:
-	cd out && ./multisearch
+	./multisearch
