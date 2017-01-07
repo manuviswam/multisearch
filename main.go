@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	c "github.com/manuviswam/multisearch/config"
 	h "github.com/manuviswam/multisearch/handler"
@@ -27,5 +28,7 @@ func main() {
 	twitter.SetBearerToken(conf.EncodedTwitterKey)
 
 	http.HandleFunc("/", h.HandleSearch(google, duckDuckGo, twitter))
-	fmt.Println(http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), nil))
+
+	port := os.Getenv("PORT")
+	fmt.Println(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }

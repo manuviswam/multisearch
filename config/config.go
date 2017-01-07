@@ -6,7 +6,6 @@ import (
 )
 
 type Configuration struct {
-	Port              int
 	GoogleAPIKey      string
 	EncodedTwitterKey string
 }
